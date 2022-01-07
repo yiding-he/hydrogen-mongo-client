@@ -5,6 +5,7 @@ import com.hyd.fx.dialog.AlertDialog;
 import com.hyd.fx.enhancements.ListViewEnhancements;
 import com.hyd.fx.window.WindowHelper;
 import com.hyd.mongoclient.domain.ConnectionInfo;
+import com.hyd.mongoclient.event.ConnectionSelectedEvent;
 import com.hyd.mongoclient.repository.ConnectionsRepository;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -13,6 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.util.function.BiConsumer;
@@ -22,6 +24,9 @@ public class DlgConnectionsController {
 
     @Autowired
     private ConnectionsRepository connectionsRepository;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     public ListView<ConnectionInfo> lvConnections;
 
@@ -92,7 +97,11 @@ public class DlgConnectionsController {
         });
     }
 
-    public void openConnectionClicked() {
+    public void openConnectionClicked(ActionEvent actionEvent) {
+        withSelectedConnectionInfo((index, connectionInfo) -> {
+            WindowHelper.closeContainerWindow(actionEvent.getSource());
+            publisher.publishEvent(new ConnectionSelectedEvent(connectionInfo));
+        });
     }
 
     public void testConnectionClicked() {
