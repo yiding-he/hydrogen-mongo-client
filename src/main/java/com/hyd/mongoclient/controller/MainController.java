@@ -1,22 +1,26 @@
 package com.hyd.mongoclient.controller;
 
 import com.hyd.fx.app.AppPrimaryStage;
+import com.hyd.fx.dialog.AlertDialog;
 import com.hyd.fx.dialog.DialogBuilder;
 import com.hyd.fx.helpers.TableViewHelper;
 import com.hyd.mongoclient.MongoClientMain;
+import com.hyd.mongoclient.client.MongoClientFactory;
 import com.hyd.mongoclient.domain.DatabaseInfo;
 import com.hyd.mongoclient.event.ConnectionSelectedEvent;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +46,8 @@ public class MainController {
 
   public TextField txtSearchDatabase;
 
-  private MongoClient currentMongoClient;
+  @Autowired
+  private MongoClientFactory mongoClientFactory;
 
   private List<DatabaseInfo> allDatabases;
 
@@ -58,19 +63,30 @@ public class MainController {
   }
 
   private void createOrOpenDatabaseTab(DatabaseInfo databaseInfo) {
-    String dbName = databaseInfo.getDbName();
-    Tab dbTab = tpDatabases.getTabs().stream()
-      .filter(tab -> dbName.equals(tab.getProperties().get(DB_NAME)))
-      .findFirst().orElse(null);
+    try {
+      String dbName = databaseInfo.getDbName();
+      Tab dbTab = tpDatabases.getTabs().stream()
+        .filter(tab -> dbName.equals(tab.getProperties().get(DB_NAME)))
+        .findFirst().orElse(null);
 
-    if (dbTab == null) {
-      dbTab = new Tab(dbName);
-      dbTab.setClosable(true);
-      dbTab.getProperties().put(DB_NAME, dbName);
-      tpDatabases.getTabs().add(dbTab);
+      if (dbTab == null) {
+        dbTab = new Tab(dbName);
+        dbTab.setClosable(true);
+        dbTab.getProperties().put(DB_NAME, dbName);
+        dbTab.setContent(loadDatabaseTabContent(dbName));
+        tpDatabases.getTabs().add(dbTab);
+      }
+
+      tpDatabases.getSelectionModel().select(dbTab);
+    } catch (Exception e) {
+      AlertDialog.error("错误", e);
     }
+  }
 
-    tpDatabases.getSelectionModel().select(dbTab);
+  private Parent loadDatabaseTabContent(String dbName) throws IOException {
+    return MongoClientMain.<TabDatabaseController>loadFxml(
+      "/fxml/tab_database.fxml", controller -> controller.setDatabaseName(dbName)
+    );
   }
 
   public void openConnectionClicked() {
@@ -86,11 +102,8 @@ public class MainController {
 
   @EventListener
   public void onConnectionSelected(ConnectionSelectedEvent event) {
-    if (currentMongoClient != null) {
-      currentMongoClient.close();
-      currentMongoClient = null;
-    }
-    currentMongoClient = MongoClients.create(event.getConnectionInfo().getUrl());
+    mongoClientFactory.closeCurrentClient();
+    mongoClientFactory.setMongoClient(MongoClients.create(event.getConnectionInfo().getUrl()));
     loadDatabases();
   }
 
@@ -101,7 +114,7 @@ public class MainController {
     items.clear();
 
     new Thread(() -> {
-      currentMongoClient.listDatabases().nameOnly(true).forEach(doc -> {
+      mongoClientFactory.getMongoClient().listDatabases().nameOnly(true).forEach(doc -> {
         DatabaseInfo databaseInfo = new DatabaseInfo();
         databaseInfo.setDbName(doc.getString("name"));
         Platform.runLater(() -> items.add(databaseInfo));

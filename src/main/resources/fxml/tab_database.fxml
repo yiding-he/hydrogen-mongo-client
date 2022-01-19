@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hyd.mongoclient.controller.TabDatabaseController">
+
+  <center>
+    <TabPane fx:id="tpCollections">
+      <Tab closable="false" text="[Collections]">
+        <VBox spacing="10.0">
+          <TableView VBox.vgrow="ALWAYS" fx:id="tbCollectionList" />
+          <HBox spacing="5.0">
+            <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#createCollectionClicked" text="➕" />
+            <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#deleteCollectionClicked" text="➖" />
+          </HBox>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+        </VBox>
+      </Tab>
+    </TabPane>
+  </center>
+</BorderPane>

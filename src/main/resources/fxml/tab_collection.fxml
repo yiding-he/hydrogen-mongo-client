@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.hyd.mongoclient.controller.TabCollectionController">
+  <center>
+    <VBox>
+      <HBox alignment="BASELINE_LEFT" spacing="10">
+        <Label text="Create New:"/>
+        <Hyperlink text="Query"/>
+        <Hyperlink text="Update"/>
+        <Hyperlink text="Delete"/>
+      </HBox>
+      <TabPane VBox.vgrow="ALWAYS"/>
+    </VBox>
+  </center>
+  <padding>
+    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+  </padding>
+</BorderPane>

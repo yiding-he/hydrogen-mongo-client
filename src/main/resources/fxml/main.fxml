@@ -3,68 +3,52 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hyd.mongoclient.controller.MainController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hyd.mongoclient.controller.MainController">
   <top>
     <MenuBar BorderPane.alignment="CENTER">
-      <menus>
-        <Menu mnemonicParsing="false" text="Connection">
-          <items>
-            <MenuItem fx:id="mnuOpenConnection" mnemonicParsing="false" onAction="#openConnectionClicked"
-                      text="Open..."/>
-            <SeparatorMenuItem mnemonicParsing="false"/>
-            <MenuItem mnemonicParsing="false" onAction="#exitClicked" text="Exit"/>
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Tools">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Options..."/>
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-          <items>
-            <MenuItem mnemonicParsing="false" text="About..."/>
-          </items>
-        </Menu>
-      </menus>
+      <Menu mnemonicParsing="false" text="Connection">
+        <MenuItem fx:id="mnuOpenConnection" mnemonicParsing="false" onAction="#openConnectionClicked" text="Open..." />
+        <SeparatorMenuItem mnemonicParsing="false" />
+        <MenuItem mnemonicParsing="false" onAction="#exitClicked" text="Exit" />
+      </Menu>
+      <Menu mnemonicParsing="false" text="Tools">
+        <MenuItem mnemonicParsing="false" text="Options..." />
+      </Menu>
+      <Menu mnemonicParsing="false" text="Help">
+        <MenuItem mnemonicParsing="false" text="About..." />
+      </Menu>
     </MenuBar>
   </top>
   <center>
     <TabPane fx:id="tpDatabases" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-      <tabs>
-        <Tab closable="false" text="Databases">
-          <content>
-            <BorderPane>
+      <Tab closable="false" text="[Databases]">
+        <BorderPane>
+          <padding>
+            <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+          <center>
+            <TableView fx:id="tbDatabaseList" BorderPane.alignment="CENTER">
+              <columns>
+                <TableColumn fx:id="colDbName" prefWidth="400.0" text="Database Name" />
+                <TableColumn fx:id="colDbSize" prefWidth="198.4000244140625" text="Data Size" />
+                <TableColumn fx:id="colCollectionCount" prefWidth="334.3999938964844" text="Collections" />
+              </columns>
+              <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+              </columnResizePolicy>
+            </TableView>
+          </center>
+          <bottom>
+            <HBox alignment="BASELINE_LEFT" spacing="10" BorderPane.alignment="CENTER">
               <padding>
-                <Insets topRightBottomLeft="5"/>
+                <Insets top="5.0" />
               </padding>
-              <center>
-                <TableView fx:id="tbDatabaseList" BorderPane.alignment="CENTER">
-                  <columns>
-                    <TableColumn fx:id="colDbName" prefWidth="400.0" text="Database Name"/>
-                    <TableColumn fx:id="colDbSize" prefWidth="198.4000244140625" text="Data Size"/>
-                    <TableColumn fx:id="colCollectionCount" prefWidth="334.3999938964844" text="Collections"/>
-                  </columns>
-                  <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                  </columnResizePolicy>
-                </TableView>
-              </center>
-              <bottom>
-                <HBox alignment="BASELINE_LEFT" spacing="10" BorderPane.alignment="CENTER">
-                  <children>
-                    <Label text="Search Database Name: "/>
-                    <TextField fx:id="txtSearchDatabase" prefWidth="400" onAction="#txtSearchDatabaseChanged"/>
-                  </children>
-                  <padding>
-                    <Insets top="5.0"/>
-                  </padding>
-                </HBox>
-              </bottom>
-            </BorderPane>
-          </content>
-        </Tab>
-      </tabs>
+              <Label text="Search Database Name: " />
+              <TextField fx:id="txtSearchDatabase" onAction="#txtSearchDatabaseChanged" prefWidth="400" />
+            </HBox>
+          </bottom>
+        </BorderPane>
+      </Tab>
     </TabPane>
   </center>
 </BorderPane>
