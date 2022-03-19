@@ -92,7 +92,7 @@ public class MainController {
   public void openConnectionClicked() {
     new DialogBuilder()
       .title("Manage Connections")
-      .body("/fxml/dlg_connections.fxml")
+      .body(MainController.class.getResource("/fxml/dlg_connections.fxml"))
       .resizable(true)
       .noDefaultButtons()
       .owner(AppPrimaryStage.getPrimaryStage())
